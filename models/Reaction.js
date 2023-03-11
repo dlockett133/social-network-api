@@ -22,5 +22,14 @@ const reactionsSchema = new Schema(
                 return Date(timestamp).toLocaleDateString();
             }
         }
+    },
+    {
+        toJSON: {
+          getters: true,
+        },
+        id: false,
     }
-)
+);
+
+module.exports = Reaction;
+

@@ -27,6 +27,12 @@ const userSchema = new Schema(
                 ref: 'user'
             }
         ]
+    },
+    {
+        toJSON: {
+          virtuals: true,
+        },
+        id: false,
     }
 );
 
