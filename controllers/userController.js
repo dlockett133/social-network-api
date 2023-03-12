@@ -50,7 +50,7 @@ module.exports = {
                 res.status(500).json(err);
             });
     },
-    
+
     deleteUser(req,res) {
         User.findByIdAndDelete(req.params.userId)
             .then((user) => {
@@ -62,5 +62,22 @@ module.exports = {
                 console.log(err);
                 res.status(500).json(err);
             });
+    },
+
+    addFriend(req,res) {
+        User.findOneAndUpdate(
+            {_id: req.params.userId},
+            {$addToSet: {friends: req.params.friendId}},
+            {new: true})
+            .populate('friends')
+            .then((user) => {
+                !user
+                ? res.status(400).json({message: 'Found no user with this ID'})
+                : res.json(user)
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json(err);
+            })
     }
-}
+};
