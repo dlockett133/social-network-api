@@ -47,7 +47,7 @@ module.exports = {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(500).json({message: 'Server error'});
             });
     },
 
@@ -60,7 +60,7 @@ module.exports = {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(500).json({message: 'Server error'});
             });
     },
 
@@ -77,7 +77,24 @@ module.exports = {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(500).json({message: 'Server error'});
+            })
+    },
+
+    removeFriend(req,res) {
+        User.findOneAndDelete(
+            {_id: req.params.userId},
+            {$pull: {friends: req.params.friendId}},
+            {new: true})
+            .populate('friends')
+            .then((user) => {
+                !user
+                    ? res.status(400).json({message: 'Found no user with this ID'})
+                    : res.json({message: 'Friend removed from list'})
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({message: 'Server error'});
             })
     }
 };
