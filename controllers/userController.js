@@ -3,11 +3,11 @@ const { User } = require("../models");
 module.exports = {
     getUsers(req,res) {
         User.find()
-        .then((users) => res.json(users))
-        .catch((err)=> {
-            console.log(err);
-            res.status(500).json(err);
-        });
+            .then((users) => res.status(200).json(users))
+            .catch((err)=> {
+                console.log(err);
+                res.status(500).json(err);
+            });
     },
     
     getSingleUser(req,res) {
@@ -17,7 +17,7 @@ module.exports = {
             .then((user) => {
                 !user 
                     ? res.status(400).json({message: 'Found no user with this ID'})
-                    : res.json(user);
+                    : res.status(200).json(user);
             })
             .catch((err) => {
                 console.log(err);
