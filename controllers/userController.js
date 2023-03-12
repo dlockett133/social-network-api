@@ -14,7 +14,11 @@ module.exports = {
         User.findOne({_id: req.params.userId})
             .populate('thoughts')
             .populate('friends')
-            .then((user) => res.json(user))
+            .then((user) => {
+                !user 
+                    ? res.status(400).json({message: 'Found no user with this ID'})
+                    : res.json(user);
+            })
             .catch((err) => {
                 console.log(err);
                 res.status(500).json(err);
