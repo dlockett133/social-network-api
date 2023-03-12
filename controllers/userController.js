@@ -28,5 +28,26 @@ module.exports = {
                 console.log(err);
                 res.status(500).json(err);
             });
+    },
+
+    updateUser(req,res) {
+        User.findByIdAndUpdate(
+            req.params.userId, 
+            req.params.body,
+            {
+                new: true,
+                runValidators: true
+            })
+            .populate('thoughts')
+            .populate('friends')
+            .then((user) => {
+                !user 
+                    ? res.status(400).json({message: 'Found no user with this ID'})
+                    : res.json(user);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json(err);
+            });
     }
 }
