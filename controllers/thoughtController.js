@@ -21,5 +21,26 @@ module.exports = {
                 console.log(err);
                 res.status(500).json({message: 'Server Error'})
             });
+    },
+
+    createThought(req,res) {
+        const {thoughtText, username, userId} = req.body;
+        Thought.create({thoughtText, username})
+            .then((thought) =>{
+                const thoughtId = thought._id;
+                
+                return Thought.findByIdAndUpdate(userId,
+                {$push: {thoughts: thoughtId}},
+                {new: true});
+            })
+            .then((user) => {
+                !user
+                    ? res.status(400).json({message: 'Found no user with this ID'})
+                    : res.status(201).json(user)
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({message: 'Server Error'})
+            })      
     }
 }
