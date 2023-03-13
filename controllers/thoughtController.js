@@ -1,4 +1,4 @@
-const { Thought } = require("../models");
+const { Thought, User } = require("../models");
 
 module.exports = {
     getThoughts(req,res) {
@@ -66,13 +66,22 @@ module.exports = {
     },
 
     deleteThought(req,res) {
-        Thought.findOneAndDelete(
-            {_id: req.params.thoughtId},
-            {new: true})
+        const {thoughtId} = req.params;
+        Thought.findByIdAndDelete(thoughtId)
             .then((thought) => {
-                !thought
-                    ? res.status(400).json({message: 'Found no thought with this ID'})
-                    : res.status(200).json({message: 'Thought removed'})
+                if (!thought) {
+                  res.status(400).json({message: 'Found no thought with this ID'})
+                }
+                return User.findByIdAndUpdate(
+                    thought.username,
+                    {$pull: {thoughts: thoughtId}},
+                    {new: true}
+                )
+            .then((user) => {
+                !user
+                    ? res.status(400).json({message: 'Found no user with this ID'})
+                    : res.json({ message: 'Thought and associated user data deleted' });
+            })
             })
             .catch((err) => {
                 console.log(err);
