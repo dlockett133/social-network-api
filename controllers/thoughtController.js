@@ -111,5 +111,25 @@ module.exports = {
             console.log(err);
             res.status(500).json({message: 'Server Error'})
         });
+    },
+
+    removeReaction(req,res) {
+        const {thoughtId} = req.params;
+        const {reactionId} = req.body;
+        Thought.findByIdAndUpdate(
+            thoughtId,
+            {$pull: {reactions: {reactionId}}},
+            {new: true}
+            )
+            .then((thought) => {
+                if(!thought) {
+                    res.status(400).json({message: 'Found no thought with this ID'});
+                }
+                res.json({message: 'Reaction has been removed'})
+            })  
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({message: 'Server Error'})
+            });
     }
 }
