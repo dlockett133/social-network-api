@@ -11,7 +11,8 @@ module.exports = {
     },
 
     getSingleThought(req,res) {
-        Thought.findOne({_id: req.params.thoughtId})
+        const {thoughtId} = req.params;
+        Thought.findOne({_id: thoughtId})
             .then((thought) => {
                 !thought
                     ? res.status(400).json({message: 'No user found with this ID'})
@@ -29,7 +30,8 @@ module.exports = {
             .then((thought) =>{
                 const thoughtId = thought._id;
                 
-                return Thought.findByIdAndUpdate(userId,
+                return User.findByIdAndUpdate(
+                userId,
                 {$push: {thoughts: thoughtId}},
                 {new: true});
             })
