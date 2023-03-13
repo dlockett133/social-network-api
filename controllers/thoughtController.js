@@ -63,6 +63,23 @@ module.exports = {
             console.log(err)
             res.status(500).json({message: 'Server Error'})
         })
+    },
+
+    deleteThought(req,res) {
+        Thought.findOneAndDelete(
+            {_id: req.params.thoughtId},
+            {new: true})
+            .then((thought) => {
+                !thought
+                    ? res.status(400).json({message: 'Found no thought with this ID'})
+                    : res.status(200).json({message: 'Thought removed'})
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({message: 'Server Error'})
+            })
     }
+
+    
 
 }
