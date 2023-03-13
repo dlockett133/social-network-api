@@ -87,8 +87,29 @@ module.exports = {
                 console.log(err);
                 res.status(500).json({message: 'Server Error'})
             })
+    },
+
+    createReaction(req,res) {
+        const {thoughtId} = req.params;
+        const {username, reactionBody} = req.body;
+        Thought.findByIdAndUpdate(
+            thoughtId,
+            {$push: {reactions: {username, reactionBody}}},
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+        .then((thought) => {
+            if(!thought) {
+                res.status(400).json({message: 'Found no thought with this ID'});
+            }
+
+            res.status(201).json({thought})
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({message: 'Server Error'})
+        });
     }
-
-    
-
 }
