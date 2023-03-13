@@ -48,8 +48,9 @@ module.exports = {
 
     updateThought(req,res) {
         const { thoughtText } = req.body;
+        const {thoughtId} = req.params
         Thought.findByIdAndUpdate(
-            req.params.thoughtId,
+            thoughtId,
             {thoughtText},
             {
                 new: true,
