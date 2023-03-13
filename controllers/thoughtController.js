@@ -42,5 +42,27 @@ module.exports = {
                 console.log(err);
                 res.status(500).json({message: 'Server Error'})
             })      
+    },
+
+    updateThought(req,res) {
+        const { thoughtText } = req.body;
+        Thought.findByIdAndUpdate(
+            req.params.thoughtId,
+            {thoughtText},
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+        .then((thought) => {
+            !thought
+                ? res.status(400).json({message: 'Found no thought with this ID'})
+                : res.status(201).json(thought)
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json({message: 'Server Error'})
+        })
     }
+
 }
