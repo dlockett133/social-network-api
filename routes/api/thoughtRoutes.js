@@ -19,10 +19,10 @@ router.route('/:thoughtId')
     .put(updateThought)
     .delete(deleteThought);
 
-
-
 router.route('/:thoughtId/reactions')
     .post(createReaction)
     .delete(removeReaction);
 
 module.exports = router;
+
+// 640f96f9e86428f37c4a05a7

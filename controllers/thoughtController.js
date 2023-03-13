@@ -26,6 +26,10 @@ module.exports = {
 
     createThought(req,res) {
         const {thoughtText, username, userId} = req.body;
+        if(!userId){
+            res.status(400).json({message: 'Found no user with this ID'})
+        }
+
         Thought.create({thoughtText, username})
             .then((thought) =>{
                 const thoughtId = thought._id;
@@ -48,7 +52,7 @@ module.exports = {
 
     updateThought(req,res) {
         const {thoughtText} = req.body;
-        const {thoughtId} = req.params
+        const {thoughtId} = req.params;
         Thought.findByIdAndUpdate(
             thoughtId,
             {thoughtText},
@@ -70,26 +74,30 @@ module.exports = {
 
     deleteThought(req,res) {
         const {thoughtId} = req.params;
-        Thought.findByIdAndDelete(thoughtId)
-            .then((thought) => {
-                if (!thought) {
-                  res.status(400).json({message: 'Found no thought with this ID'})
-                }
-                return User.findByIdAndUpdate(
-                    thought.username,
-                    {$pull: {thoughts: thoughtId}},
-                    {new: true}
-                )
-            .then((user) => {
-                !user
-                    ? res.status(400).json({message: 'Found no user with this ID'})
-                    : res.json({ message: 'Thought and associated user data deleted' });
-            })
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).json({message: 'Server Error'})
-            })
+        Thought.findById(thoughtId)
+        .then((thought) => {  
+            if (!thought) {
+                res.status(400).json({message: 'Found no thought with this ID'})
+            }          
+            return Thought.findByIdAndDelete(thoughtId);
+        })
+        .then((thought) => {
+            const username = thought.username;    
+            return User.findOneAndUpdate(
+                {username: username},
+                {$pull: {thoughts: thoughtId}},
+                {new: true}
+            )
+        .then((user) => {
+            !user
+                ? res.status(400).json({message: 'Found no user with this ID'})
+                : res.json({ message: 'Thought and associated user data deleted' });
+        })
+    })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({message: 'Server Error'})
+        })
     },
 
     createReaction(req,res) {

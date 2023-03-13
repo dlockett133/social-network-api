@@ -1,10 +1,10 @@
-const { Schema, model, default: mongoose } = require('mongoose');
+const { Schema, default: mongoose } = require('mongoose');
 
 const reactionsSchema = new Schema(
     {
         reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Schema.Types.ObjectId()
+            type: mongoose.Types.ObjectId,
+            default: () => new mongoose.Types.ObjectId()
         },
         reactionBody: {
             type: String,
@@ -19,7 +19,7 @@ const reactionsSchema = new Schema(
             type: Date,
             default: Date.now,
             get: function (timestamp) {
-                return Date(timestamp).toLocaleDateString();
+                return new Date(timestamp).toLocaleDateString();
             }
         }
     },
